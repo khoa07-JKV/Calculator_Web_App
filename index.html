@@ -3,204 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
+    <title>Calculator Hub</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: hsl(210, 25%, 90%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 20px;
         }
-        
-        .calculator {
-            max-inline-size: 22rem;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15), 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
-            margin-inline-start: auto;
-            margin-inline-end: auto;
-            margin-block-start: 2em;
+
+        header {
+            text-align: center;
+            color: white;
+            margin: 40px 0;
         }
-        
-        .calculator_output {
-            font-size: 2rem;
-            text-align: end;
-            background: hsl(202, 11%, 29%);
-            color: hsl(255, 100%, 100%);
-            padding-block-start: 0.25rem;
-            padding-block-end: 0.25rem;
-            padding-inline-end: 0.75rem;
-            min-height: 3rem;
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        .calc-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .calc-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .calc-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .calc-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .calc-card p {
+            text-align: center;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .simple { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .scientific { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .graphing { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+        .calc-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            word-wrap: break-word;
-            word-break: break-all;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
         }
 
-        .calculator_keys {
-        
-            padding: 0.5rem;    
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-gap: 1px;
-            background: hsl(207, 19%, 61%);
+        footer {
+            color: white;
+            text-align: center;
+            opacity: 0.8;
+            margin-top: auto;
         }
 
-        .calculator_key {
-            background: hsl(210, 25%, 95%);
-            border: none;
-            padding-block-start: 0.5rem;
-            padding-block-end: 0.5rem;
-            padding-inline-start: 1.25rem;
-            padding-inline-end: 1.25rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: background 0.1s;
-            inline-size: 60px;
-            block-size: 60px;
-            border-radius: 40px;
-            margin: 0.25rem;
-        }
-        
-        .calculator_key:active,
-        .calculator_key:focus {
-            box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3) inset;
-            outline: none;
-        }
-
-        .calculator_key--operator {
-            background: hsl(208, 25%, 86%);
-        }
-
-        .calculator_key--operator:active {
-            background: hsl(208, 24%, 80%);
-        }
-
-        .calculator_key--enter {
-            grid-column: 4 / 5;
-            grid-row: 2 / span 4;
-            background: hsl(233, 85%, 69%);
-            height: auto;
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-<Link rel="manifest" href="manifest.json">
 <body>
-    <div class="calculator">
-        <div class="calculator_output" id="display">0</div>
-        <div class="calculator_keys">
-            <button class="calculator_key calculator_key--operator" data-action="add">+</button>
-            <button class="calculator_key calculator_key--operator" data-action="subtract">-</button>
-            <button class="calculator_key calculator_key--operator" data-action="multiply">&times;</button>
-            <button class="calculator_key calculator_key--operator" data-action="divide">÷</button>
-            <button class="calculator_key" data-number="7">7</button>
-            <button class="calculator_key" data-number="8">8</button>
-            <button class="calculator_key" data-number="9">9</button>
-            <button class="calculator_key" data-number="4">4</button>
-            <button class="calculator_key" data-number="5">5</button>
-            <button class="calculator_key" data-number="6">6</button>
-            <button class="calculator_key" data-number="1">1</button>
-            <button class="calculator_key" data-number="2">2</button>
-            <button class="calculator_key" data-number="3">3</button>
-            <button class="calculator_key" data-number="0">0</button>
-            <button class="calculator_key" data-action="decimal">.</button>
-            <button class="calculator_key" data-action="clear">AC</button>
-            <button class="calculator_key calculator_key--enter calculator_key--operator" data-action="calculate">=</button>
-        </div>
+    <header>
+        <h1>Calculator Hub</h1>
+        <p>Choose the perfect calculator for your needs</p>
+    </header>
+
+    <div class="calculator-grid">
+        <a href="simple.html" class="calc-card">
+            <div class="calc-icon simple">
+                <span>+−×÷</span>
+            </div>
+            <h2>Simple Calculator</h2>
+            <p>Perfect for everyday calculations. Addition, subtraction, multiplication, and division made easy.</p>
+        </a>
+
+        <a href="scientific.html" class="calc-card">
+            <div class="calc-icon scientific">
+                <span>x²√π</span>
+            </div>
+            <h2>Scientific Calculator</h2>
+            <p>Advanced functions including trigonometry, logarithms, exponents, and more for complex calculations.</p>
+        </a>
+
+        <a href="graphing.html" class="calc-card">
+            <div class="calc-icon graphing">
+                <span>📈</span>
+            </div>
+            <h2>Graphing Calculator</h2>
+            <p>Visualize mathematical functions with interactive graphs and plots for better understanding.</p>
+        </a>
     </div>
 
-    <script>
-        if ('serviceWorker' in navigator){
-                navigator.serviceWorker.register('/sw.js');
-        }
-        const display = document.getElementById('display');
-        const keys = document.querySelector('.calculator_keys');
-        
-        let firstValue = null;
-        let operator = null;
-        let waitingForSecondValue = false;
-
-        keys.addEventListener('click', (e) => {
-            if (!e.target.matches('button')) return;
-            
-            const key = e.target;
-            const action = key.dataset.action;
-            const keyContent = key.textContent;
-            const displayValue = display.textContent;
-
-            // Handle number buttons
-            if (key.dataset.number) {
-                // If pressing 0 when display is already 0, reset calculator
-                if (key.dataset.number === '0' && displayValue === '0') {
-                    firstValue = null;
-                    operator = null;
-                    waitingForSecondValue = false;
-                    return;
-                }
-                
-                if (waitingForSecondValue) {
-                    display.textContent = key.dataset.number;
-                    waitingForSecondValue = false;
-                } else {
-                    display.textContent = displayValue === '0' ? key.dataset.number : displayValue + key.dataset.number;
-                }
-            }
-
-            // Handle decimal point
-            if (action === 'decimal') {
-                if (waitingForSecondValue) {
-                    display.textContent = '0.';
-                    waitingForSecondValue = false;
-                } else if (!displayValue.includes('.')) {
-                    display.textContent = displayValue + '.';
-                }
-            }
-
-            // Handle operators
-            if (action === 'add' || action === 'subtract' || action === 'multiply' || action === 'divide') {
-                const inputValue = parseFloat(displayValue);
-
-                if (firstValue === null) {
-                    firstValue = inputValue;
-                } else if (operator) {
-                    const result = calculate(firstValue, inputValue, operator);
-                    display.textContent = String(result);
-                    firstValue = result;
-                }
-
-                waitingForSecondValue = true;
-                operator = action;
-            }
-
-            // Handle equals
-            if (action === 'calculate') {
-                const inputValue = parseFloat(displayValue);
-
-                if (firstValue !== null && operator) {
-                    const result = calculate(firstValue, inputValue, operator);
-                    display.textContent = String(result);
-                    firstValue = null;
-                    operator = null;
-                    waitingForSecondValue = false;
-                }
-            }
-
-            // Handle clear
-            if (action === 'clear') {
-                display.textContent = '0';
-                firstValue = null;
-                operator = null;
-                waitingForSecondValue = false;
-            }
-        });
-
-        function calculate(first, second, op) {
-            if (op === 'add') return first + second;
-            if (op === 'subtract') return first - second;
-            if (op === 'multiply') return first * second;
-            if (op === 'divide') return first / second;
-            return second;
-        }
-    </script>
+    <footer>
+        <p>&copy; 2024 Calculator Hub. All calculators are free to use.</p>
+    </footer>
 </body>
 </html>
